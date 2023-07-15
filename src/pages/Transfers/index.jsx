@@ -18,57 +18,57 @@ class Transfers extends Component {
     }
 
     handleChange(event) {
-        this.setState({
-          [event.target.name]: event.target.value
-        });
-    }
+      const { name, value } = event.target;
 
-    handleSearch() {
-        this.setState(
-          {
-            page: 0
-          },
-          () => {
-            const { transferStartDate, transferEndDate, transactionOperatorName } = this.state;
-
-            // Crie um objeto com os parâmetros de busca
-            const data = {
-                transferStartDate: transferStartDate ?? "",
-                transferEndDate: transferEndDate ?? "",
-                transactionOperatorName: transactionOperatorName ?? ""
-            };
-            console.log(data);
-            TransferService.getTransferSearch(data).then((response) => {
-              console.log("passou aqui");
-              console.log(response.data);
-                this.setState({
-                  transferencias: response.data.content,
-                  totalPages: response.data.totalPages,
-                  page: response.data.number
-                });
-                console.log(response.data);
-            });
-          }
-        );
+      if (name === 'transferStartDate') {
+        // Atualize o estado da data de início
+        this.setState({ transferStartDate: value });
+      } else if (name === 'transferEndDate') {
+        // Verifique se a nova data de fim é anterior à data de início
+        if (value < this.state.transferStartDate) {
+          // Se for anterior, defina a data de fim como a data de início
+          this.setState({ transferEndDate: this.state.transferStartDate });
+        } else {
+          // Caso contrário, atualize o estado da data de fim
+          this.setState({ transferEndDate: value });
+        }
+      } else {
+        this.setState({ transactionOperatorName: value });
       }
+    }
   
     componentDidMount() {
       this.retrieveTransfers();
+    }
+
+    handleSearch() {
+      this.setState(
+        {
+          page: 0
+        },
+        () => {
+          this.retrieveTransfers();
+        }
+      );
     }
   
     retrieveTransfers() {
       const { page } = this.state;
       let params = "";
       params= "page=" + page;
-  
-      console.log(params);
-      TransferService.getTransfer(params).then((response) => {
-        this.setState({
-          transferencias: response.data.content,
-          totalPages: response.data.totalPages,
-          page: response.data.number
-        });
-        console.log(response.data.content);
+      const { transferStartDate, transferEndDate, transactionOperatorName } = this.state;
+
+      const data = {
+          transferStartDate: transferStartDate ?? "",
+          transferEndDate: transferEndDate ?? "",
+          transactionOperatorName: transactionOperatorName ?? ""
+      };
+      TransferService.getTransfer(params, data).then((response) => {
+          this.setState({
+            transferencias: response.data.content,
+            totalPages: response.data.totalPages,
+            page: response.data.number
+          });
       });
     }
   
@@ -90,19 +90,41 @@ class Transfers extends Component {
           <div className="row mt-5">
             <div className="col me-5">
               <label htmlFor="transferStartDate" className="form-label">Data de Início</label>
-              <input type="date" id="transferStartDate" name="transferStartDate" className="form-control" onChange={this.handleChange} /> 
+              <input 
+                type="date" 
+                id="transferStartDate" 
+                name="transferStartDate" 
+                className="form-control" 
+                onChange={this.handleChange}
+                value={this.state.transferStartDate} /> 
             </div>
             <div className="col me-5">
               <label htmlFor="transferEndDate" className="form-label">Data de Fim</label>
-              <input type="date" id="transferEndDate" name="transferEndDate" className="form-control" onChange={this.handleChange} />
+              <input 
+                type="date" 
+                id="transferEndDate" 
+                name="transferEndDate" 
+                className="form-control" 
+                onChange={this.handleChange}
+                value={this.state.transferEndDate} />
             </div>
             <div className="col">
               <label htmlFor="transactionOperatorName" className="form-label">Nome operador transação</label>
-              <input type="text" id="transactionOperatorName" name="transactionOperatorName" className="form-control" onChange={this.handleChange} /> 
+              <input 
+                type="text" 
+                id="transactionOperatorName" 
+                name="transactionOperatorName" 
+                className="form-control" 
+                onChange={this.handleChange} /> 
             </div>
           </div>
           <div className="d-flex justify-content-end my-5" >
-            <button type="button" className="btn btn-secondary" onClick={this.handleSearch}>Pesquisar</button>
+            <button 
+              type="button" 
+              className="btn btn-secondary" 
+              onClick={this.handleSearch}>
+                Pesquisar
+            </button>
           </div>
   
           <div>
@@ -137,14 +159,14 @@ class Transfers extends Component {
             <div className="border container">
                 <Pagination className="justify-content-center mb-0">
                     <Pagination.First 
-                        onClick={() => this.handlePageChange(0)} 
-                        disabled={page === 0}
-                        linkStyle={{border: 'none', margin: '0 0.5em' }}/>
+                      onClick={() => this.handlePageChange(0)} 
+                      disabled={page === 0}
+                      linkStyle={{border: 'none', margin: '0 0.5em' }}/>
                     <Pagination.Prev 
-                        onClick={() => this.handlePageChange(page - 1)}
-                        disabled={page === 0}
-                        linkStyle={{border: 'none', margin: '0 0.5em' }}/>
-                    {Array.from({ length: totalPages }, (_, index) => (
+                      onClick={() => this.handlePageChange(page - 1)}
+                      disabled={page === 0}
+                      linkStyle={{border: 'none', margin: '0 0.5em' }}/>
+                      {Array.from({ length: totalPages }, (_, index) => (
                         <Pagination.Item
                         linkStyle={{border: 'none', margin: '0 0.5em' }}
                         key={index}
@@ -153,7 +175,7 @@ class Transfers extends Component {
                         >
                         {index + 1}
                         </Pagination.Item>
-                    ))}
+                      ))}
                     <Pagination.Next 
                         onClick={() => this.handlePageChange(page + 1)}
                         disabled={page === totalPages - 1}
