@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import TransferService from '../../services/TransferService';
 import moment from 'moment';
 import Pagination from 'react-bootstrap/Pagination';
+import { useParams } from 'react-router-dom';
 
 function Transfers() {
+  const { id } = useParams();
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [transferencias, setTransferencias] = useState([]);
@@ -39,9 +41,10 @@ function Transfers() {
   const retrieveTransfers = () => {
     let params = `page=${page}`;
     const data = {
+      account: id,
       transferStartDate: transferStartDate || '',
       transferEndDate: transferEndDate || '',
-      transactionOperatorName: transactionOperatorName || ''
+      transactionOperatorName: transactionOperatorName || '',
     };
 
     TransferService.getTransfer(params, data)
@@ -56,7 +59,7 @@ function Transfers() {
   };
 
   return (
-    <div className="text-start">
+    <div className="container text-start">
       <div className="row mt-5">
         <div className="col me-5">
           <label htmlFor="transferStartDate" className="form-label">Data de Início</label>
