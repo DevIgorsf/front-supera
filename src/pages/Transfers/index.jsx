@@ -134,14 +134,25 @@ function Transfers() {
             </tr>
           </thead>
           <tbody className="table-group-divider">
-            {transferencias.map((transferencia, index) => (
-              <tr key={transferencia.id}>
-                <td>{moment(transferencia.transferDate).format("DD/MM/YYYY")}</td>
-                <td>R$ {transferencia.value}</td>
-                <td>{transferencia.typeTransfer}</td>
-                <td>{transferencia.transactionOperatorName}</td>
-              </tr>
-            ))}
+            {transferencias.map((transferencia, index) => {
+              let typeTransfer = "";
+              if(transferencia.typeTransfer === "TRANSFERENCIA") {
+                typeTransfer = transferencia.value >= 0 ? "Transferência Entrada" : "Transferência Saída";
+              } else if(transferencia.typeTransfer === "SAQUE") {
+                typeTransfer = "Saque";
+              } else if(transferencia.typeTransfer === "DEPOSITO") {
+                typeTransfer = "Depósito";
+              }
+              
+              return (
+                <tr key={transferencia.id}>
+                  <td>{moment(transferencia.transferDate).format("DD/MM/YYYY")}</td>
+                  <td>R$ {transferencia.value}</td>
+                  <td>{typeTransfer}</td>
+                  <td>{transferencia.transactionOperatorName}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         <div className="border container">
