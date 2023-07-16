@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import TransferService from '../../services/TransferService';
 import moment from 'moment';
 import Pagination from 'react-bootstrap/Pagination';
-import { useParams } from 'react-router-dom';
+import { useParams, Link  } from 'react-router-dom';
+import { BsChevronLeft } from 'react-icons/bs';
 
 function Transfers() {
   const { id } = useParams();
@@ -60,7 +61,12 @@ function Transfers() {
 
   return (
     <div className="container text-start">
-      <div className="row mt-5">
+      <div className="row mt-1">
+        <div className="d-flex justify-content-start mb-4">
+          <Link to="/" className="btn btn-light pb-2">
+            <BsChevronLeft />
+          </Link>
+        </div>
         <div className="col me-5">
           <label htmlFor="transferStartDate" className="form-label">Data de Início</label>
           <input 

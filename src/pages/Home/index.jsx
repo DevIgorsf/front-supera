@@ -31,38 +31,49 @@ function Home() {
     }
     
     return (
-        <div className="vh-100 row align-items-center justify-content-center">
-            {showError && (
-                <Alert variant="danger" 
-                    onClose={() => 
-                    setShowError(false)}
-                    dismissible
-                >
-                    Conta digitada não existente!
-                </Alert>
-            )}
-            <div className='col-3 text-start rounded p-5 bg-secondary'>
-                <label 
-                    htmlFor="account" 
-                    className="form-label text-white"
-                >
-                    Digite o número da conta:
-                </label>
-                <input 
-                  type="number"
-                  id="account" 
-                  name="account" 
-                  className="form-control" 
-                  onChange={(evento) => setAccount(evento.target.valueAsNumber)} 
-                />
-                <div className="d-flex justify-content-center mt-4">
-                    <button 
-                      type="button" 
-                      className="btn btn-primary" 
-                      onClick={handleSearch}
+        <div className="container">
+            <div className="vh-100 row align-items-center justify-content-center">
+                {showError && (
+                    <Alert variant="danger" 
+                        style={{
+                            width: '80%',
+                            position: 'absolute',
+                            top: '10%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            right: 0,
+                            zIndex: 2
+                        }}
+                        onClose={() => 
+                        setShowError(false)}
+                        dismissible
                     >
-                        Pesquisar
-                    </button>
+                        Conta digitada não existente!
+                    </Alert>
+                )}
+                <div className='col-3 text-start rounded p-5 bg-secondary'>
+                    <label 
+                        htmlFor="account" 
+                        className="form-label text-white"
+                    >
+                        Digite o número da conta:
+                    </label>
+                    <input 
+                      type="number"
+                      id="account" 
+                      name="account" 
+                      className="form-control" 
+                      onChange={(evento) => setAccount(evento.target.valueAsNumber)} 
+                    />
+                    <div className="d-flex justify-content-center mt-4">
+                        <button 
+                          type="button" 
+                          className="btn btn-primary" 
+                          onClick={handleSearch}
+                        >
+                            Pesquisar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
