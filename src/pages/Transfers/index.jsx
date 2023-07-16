@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import TransferService from '../../services/TransferService';
+import AccountService from '../../services/AccountService';
 import moment from 'moment';
 import Pagination from 'react-bootstrap/Pagination';
 import { useParams, Link  } from 'react-router-dom';
@@ -13,8 +14,13 @@ function Transfers() {
   const [transferStartDate, setTransferStartDate] = useState('');
   const [transferEndDate, setTransferEndDate] = useState('');
   const [transactionOperatorName, setTransactionOperatorName] = useState('');
+  const [balancePeriod, setBalancePeriod] = useState(0);
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
+    AccountService.getAccountBalance(id).then((response) => {
+      setBalance(response.data);
+    });
     retrieveTransfers();
   }, [page]);
 
@@ -50,8 +56,10 @@ function Transfers() {
 
     TransferService.getTransfer(params, data)
       .then((response) => {
-        setTransferencias(response.data.content);
-        setTotalPages(response.data.totalPages);
+        console.log(response.data);
+        setTransferencias(response.data.page.content);
+        setBalancePeriod(response.data.balance);
+        setTotalPages(response.data.page.totalPages);
       });
   };
 
@@ -113,8 +121,8 @@ function Transfers() {
 
       <div>
         <div className="border justify-content-start py-2">
-          <span className="px-2">Saldo total: R$ {}</span>
-          <span className="px-5">Saldo no período: R$ {}</span>
+          <span className="px-2">Saldo total: R$ {balance}</span>
+          <span className="px-5">Saldo no período: R$ {balancePeriod}</span>
         </div>
         <table className="table table-bordered mb-0">
           <thead>
@@ -160,12 +168,12 @@ function Transfers() {
             ))}
             <Pagination.Next 
               onClick={() => handlePageChange(page + 1)}
-              disabled={page === totalPages - 1}
+              disabled={page >= totalPages - 1}
               linkStyle={{border: 'none', margin: '0 0.5em' }}
             />
             <Pagination.Last 
               onClick={() => handlePageChange(totalPages - 1)}
-              disabled={page === totalPages - 1}
+              disabled={page >= totalPages - 1}
               linkStyle={{border: 'none', margin: '0 0.5em' }}
             />
           </Pagination>
